@@ -1,42 +1,37 @@
-# Screenshot → Blender MVP
+# D-DOM MVP (Emergency Hackathon)
 
-End-to-end prototype pipeline:
-
-1. Analyze reference image into structured `scene_spec.json`
-2. Generate deterministic Blender scene instructions
-3. Run Blender render automatically (if Blender is installed)
-4. Save reusable outputs in `output/`
+Public website URL -> deterministic extraction -> D-DOM JSON -> DESIGN.md -> visual HTML UI.
 
 ## Run
 
 ```bash
-python run_pipeline.py /absolute/path/to/reference.png
+python run_pipeline.py https://example.com
 ```
 
-Optional flags:
+Optional fidelity loop:
 
 ```bash
-python run_pipeline.py /absolute/path/to/reference.png --output output --width 1280 --height 720
+python run_pipeline.py https://example.com --clone-url https://example.org/clone
+```
+
+Optional output dir:
+
+```bash
+python run_pipeline.py https://example.com --output output
 ```
 
 ## Output
 
 `output/` contains:
 
-- `scene_spec.json`
-- `generated_scene.py`
-- `scene.blend` (when Blender is available)
-- `render.png` (when Blender is available)
-
-If Blender is not installed, the pipeline still writes `scene_spec.json` and `generated_scene.py`.
-You can then run Blender manually:
-
-```bash
-blender -b -P output/generated_scene.py -- output/scene_spec.json output/scene.blend output/render.png
-```
+- `ddom.json` - source D-DOM schema v0.1
+- `DESIGN.md` - concise human-readable design summary
+- `ui.html` - visual result UI (open in browser)
+- `clone_ddom.json` - only when `--clone-url` is passed
+- `fidelity.json` - only when `--clone-url` is passed (score + mismatches)
 
 ## Notes
 
-- Uses one structured scene-analysis path with deterministic fallback.
-- Scene/object data is machine-readable and validated before generation.
-- Object generation is deterministic and defaults to safe primitives when uncertain.
+- No Blender dependency in this MVP flow.
+- Extraction is deterministic and evidence-tagged.
+- Raw website HTML is not sent to LLMs.
